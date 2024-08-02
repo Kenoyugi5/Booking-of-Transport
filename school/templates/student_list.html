@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<head>
+    <title>Student List</title>
+</head>
+<body>
+    <h1>Students in {{ class_obj.name }}</h1>
+    {% for student in students %}
+        {{ student.class_number }} {{ student.first_name }} {{ student.last_name }}</br>
+    {% endfor %}
+    <br>
+    <a href="{% url 'classes' %}" class="btn btn-secondary">Back to Class List</a>
+</body>
+</html>
+{% endblock %}

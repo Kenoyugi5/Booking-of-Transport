@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h1 class="mb-4">Students for {{ booking }}</h1>
+    <ul class="list-group list-group-flush mb-4">
+      {% for student in students %}
+      <li class="list-group-item">{{ student.first_name }} {{ student.last_name }} ({{ student.class_name.name }})</li>
+      {% endfor %}
+    </ul>
+    <div class="d-flex justify-content-between">
+      <a href="{% url 'students_pdf' booking.id %}" class="btn btn-primary">Download PDF</a>
+      <a href="{% url 'show-booking' booking.id %}" class="btn btn-secondary">Back to Booking Details</a>
+    </div>
+  </div>
+{% endblock %}

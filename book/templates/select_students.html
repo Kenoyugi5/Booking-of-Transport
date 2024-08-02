@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Select Class and Students</h1>
+    <form method="POST" id="selectionForm">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.selected_class.id_for_label }}">{{ form.selected_class.label }}</label>
+            {{ form.selected_class }}
+        </div>
+        <div id="student-list" class="row">
+            <div class="col-md-6">
+                <ul class="list-group list-group-flush" id="student-list-left">
+                    <!-- Left column student list will be populated here -->
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <ul class="list-group list-group-flush" id="student-list-right">
+                    <!-- Right column student list will be populated here -->
+                </ul>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-4">Save Selection</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#id_selected_class').change(function () {
+            var classId = $(this).val();
+            $.ajax({
+                url: '{% url "load_students" %}',
+                data: {
+                    'class_id': classId
+                },
+                success: function (data) {
+                    var studentListLeft = $('#student-list-left');
+                    var studentListRight = $('#student-list-right');
+                    studentListLeft.empty();
+                    studentListRight.empty();
+                    $.each(data, function (index, student) {
+                        var checkbox = $('<input>', {
+                            type: 'checkbox',
+                            name: 'students',
+                            value: student.id,
+                            id: 'student_' + student.id,
+                            class: 'form-check-input'
+                        });
+                        var label = $('<label>', {
+                            for: 'student_' + student.id,
+                            text: student.first_name + ' ' + student.last_name,
+                            class: 'form-check-label'
+                        });
+                        var listItem = $('<li>', {
+                            class: 'list-group-item'
+                        }).append(checkbox).append(label);
+
+                        if (index < 25) {
+                            studentListLeft.append(listItem);
+                        } else {
+                            studentListRight.append(listItem);
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

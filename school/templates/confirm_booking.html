@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Confirm Booking</h1>
+    <ul class="list-group mb-4">
+        {% for student in students %}
+        <li class="list-group-item">
+            {{ student.first_name }} {{ student.last_name }} - {{ student.class_name.name }}
+        </li>
+        {% endfor %}
+    </ul>
+    <form method="POST" class="mb-3">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Confirm Booking</button>
+    </form>
+    <a href="{% url 'select_students' %}" class="btn btn-secondary">Add More Students</a>
+</div>
+
+{% endblock %}
