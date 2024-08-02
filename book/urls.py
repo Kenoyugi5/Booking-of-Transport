@@ -44,6 +44,7 @@ urlpatterns = [
     path('booking_pdf', views.booking_pdf, name="booking-pdf"),
     path('vehicle_pdf', views.vehicle_pdf, name="vehicle-pdf"),
     path('driver_pdf', views.driver_pdf, name="driver-pdf"),
+    path('pre_departure_slip_pdf/<int:booking_id>/', views.pre_departure_slip_pdf, name="pre_departure_slip_pdf"),
     path('spec_booking_pdf/<booking_id>', views.spec_booking_pdf, name="spec_booking_pdf"),
     path('students_pdf/<booking_id>', views.students_pdf, name="students_pdf"),
     path('spec_vehicle_pdf/<vehicle_id>', views.spec_vehicle_pdf, name="spec_vehicle_pdf"),

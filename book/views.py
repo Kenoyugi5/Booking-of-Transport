@@ -163,6 +163,89 @@ def my_bookings(request):
 
 
 # Generate specific PDF files
+def pre_departure_slip_pdf(request, booking_id):
+    booking = get_object_or_404(Booking, pk=booking_id)
+    students = booking.students.all()
+
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
+    textob = c.beginText()
+    textob.setTextOrigin(inch, inch)
+    textob.setFont("Times-Roman", 14)
+    
+    # Page width
+    page_width = letter[0]
+
+    # Function to calculate centered text position
+    def center_text(line):
+        text_width = c.stringWidth(line, "Times-Bold", 14)
+        centered_position = (page_width - text_width) / 2.0
+        return centered_position
+
+    # Adding pre-departure slip
+    pre_departure_lines = [
+        "STRATHMORE SCHOOL",
+        "PRE-DEPARTURE SLIP",
+        "To be filled in by the teacher in-charge of the group going out and",
+        "surrendered at the gate before departure",
+        "",
+        f"CLASS/CLUB/TEAM: {booking.class_involved}",       
+        f"DESTINATION: {booking.destination}",
+        f"TEACHER IN CHARGE: {booking.teacher}",
+        f"NUMBER OF STUDENTS: {students.count()}",
+        "",
+        "CONFIRM THE FOLLOWING HAS BEEN DONE",
+        "",
+        "[ ] Roll Call before departure (attach copy)",
+        "[ ] All necessary equipment: balls, kit, instruments etc. are loaded",
+        "[ ] In case of emergency contacts (for sports teams) obtained",
+        "[ ] Obtain a camera the day before with charged battery & with empty SD card",
+        "[ ] Ambulance contacts obtained",
+        "[ ] Participants records: sports file, festival cards, letters etc. obtained",
+        "[ ] Lunch collected and loaded",
+        "[ ] Money to account for (TAF) collected from Accounts",
+        "[ ] KWS cards for boys and SCHOOL collected (for visits to national parks)",
+        "",
+        "SIGNATURE:...............................       DATE:......................",
+        "",
+        "FOR SECURITY PERSONNEL",
+        "TIME OF DEPARTURE:........................",
+        "NAME OF SECURITY OFFICER:...........................",
+        "DATE:................................",
+        "",
+        "(TO BE RETURNED TO THE SCHOOL SECRETARY)",
+        "",
+    ]
+
+    # List of lines to be centered and bolded
+    centered_bold_lines = [
+        "STRATHMORE SCHOOL",
+        "PRE-DEPARTURE SLIP",
+        "To be filled in by the teacher in-charge of the group going out and",
+        "surrendered at the gate before departure",
+        "FOR SECURITY PERSONNEL",
+        "(TO BE RETURNED TO THE SCHOOL SECRETARY)",
+    ]
+
+    for line in pre_departure_lines:
+        if line in centered_bold_lines:
+            textob.setTextOrigin(center_text(line), textob.getY())
+            textob.setFont("Times-Bold", 14)
+        else:
+            textob.setTextOrigin(inch, textob.getY())
+            textob.setFont("Times-Roman", 14)
+        textob.textLine(line)
+
+    c.drawText(textob)
+    c.showPage()
+    c.save()
+    buf.seek(0)
+
+    filename = f'{booking.subject}_Pre-Departure_Slip.pdf'
+    return FileResponse(buf, as_attachment=True, filename=filename)
+
+
+
 def students_pdf(request, booking_id):
     booking = get_object_or_404(Booking, pk=booking_id)
     students = booking.students.all()
@@ -175,6 +258,7 @@ def students_pdf(request, booking_id):
 
     lines = []
     lines.append(f'Students Attending {booking.subject} on {booking.trip_date}')
+    lines.append(f"Number of Students: {students.count()}")
     lines.append("")
 
     for student in students:
