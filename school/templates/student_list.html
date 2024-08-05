@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>Students in {{ class_obj.name }}</h1>
-    <p><b>Number of Students:</b> {students.count()}</p>
+    <p><b>Number of Students:</b> {{ students.count }}</p>
     {% for student in students %}
         {{ student.class_number }} {{ student.first_name }} {{ student.last_name }}</br>
     {% endfor %}

@@ -12,8 +12,8 @@ def classes(request):
 		{'id': 6, 'name': 'Grade 6'},
 		{'id': 7, 'name': 'Grade 7A'},
 		{'id': 8, 'name': 'Grade 7&'},
-		{'id': 9, 'name': 'Form 8A'},
-		{'id': 10, 'name': 'Form 8&'},
+		{'id': 19, 'name': 'Grade 8A'},
+		{'id': 20, 'name': 'Grade 8&'},
 		{'id': 11, 'name': 'Form 1A'},
 		{'id': 12, 'name': 'Form 1&'},
 		{'id': 13, 'name': 'Form 2A'},
@@ -25,7 +25,7 @@ def classes(request):
 	]
 
 	primary_classes = [cls for cls in class_list if 1 <= cls['id'] <= 6]
-	jss_classes = [cls for cls in class_list if 7 <= cls['id'] <= 10]
+	jss_classes = [cls for cls in class_list if cls['id'] in [7, 8, 19, 20]]
 	highschool_classes = [cls for cls in class_list if 11 <= cls['id'] <= 18]
 
 	context = {
